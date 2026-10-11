@@ -32,26 +32,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.recipie.ui.theme.ReciPieTheme
-import com.example.recipie.GeladeiraScreen
-import com.example.recipie.FogaoScreen
-
-//pra mostrar a lista só
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.runtime.LaunchedEffect
-import com.example.recipie.data.local.database.RecipieDatabaseProvider
-import com.example.recipie.data.local.entity.RecipeEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-	//define o db
-	val database = RecipieDatabaseProvider.getDatabase(applicationContext)
         enableEdgeToEdge()
         setContent {
             ReciPieTheme {
@@ -76,13 +60,7 @@ class MainActivity : ComponentActivity() {
                             startDestination = "main"
                         ) {
                             composable("left") { GeladeiraScreen() }
-                            composable("main") { MainScreen(
-				loadRecipes = {
-					withContext(Dispatchers.IO){
-	database.recipeDao().getFirst20Recipes()
-					}
-				}
-			    ) }
+                            composable("main") { MainScreen() }
                             composable("right") { FogaoScreen() }
                         }
                     }
@@ -178,25 +156,8 @@ fun BottomNavigation(navController: NavHostController) {
     }
 }
 
-
 @Composable
-fun MainScreen(
-    loadRecipes: suspend () -> List<RecipeEntity> = { emptyList() }
-) {
-    var recipes by remember { mutableStateOf<List<RecipeEntity>>(emptyList()) }
-    var loading by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        try {
-            recipes = loadRecipes()
-        } catch (e: Exception) {
-            error = e.message ?: e.toString()
-        } finally {
-            loading = false
-        }
-    }
-
+fun MainScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -216,44 +177,8 @@ fun MainScreen(
             color = Color.LightGray,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
-	Text(
-            text = "carregar os 20 da lista de receitas (35k)",
-            fontSize = 16.sp,
-            color = Color.LightGray,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
-
-
-        when {
-            loading -> CircularProgressIndicator()
-
-            error != null -> Text(
-                text = "Database error: $error",
-                color = Color.Red
-            )
-
-            recipes.isEmpty() -> Text(
-                text = "No recipes found.",
-                color = Color.LightGray
-            )
-
-            else -> LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(recipes) { recipe ->
-                    Text(
-                        text = recipe.toString(),
-                        color = Color.White,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp)
-                    )
-                }
-            }
-        }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
@@ -265,16 +190,10 @@ fun GeladeiraScreenPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun MainScreenPreview() {
-    ReciPieTheme {
-        MainScreen()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
 fun FogaoScreenPreview() {
     ReciPieTheme {
         FogaoScreen()
     }
 }
+
+

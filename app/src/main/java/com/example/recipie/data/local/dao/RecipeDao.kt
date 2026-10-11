@@ -1,56 +1,33 @@
 package com.example.recipie.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.recipie.data.local.entity.RecipeEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecipeDao {
 
-    @Query("""
-        SELECT * FROM recipes
-        ORDER BY name ASC, id ASC
-        LIMIT :limit OFFSET :offset
-    """)
-    suspend fun getRecipes(
-        limit: Int = 30,
-        offset: Int = 0
-    ): List<RecipeEntity>
+    @Query("SELECT * FROM recipes")
+    suspend fun getAllRecipes(): List<RecipeEntity>
 
-    @Query("""
-        SELECT * FROM recipes
-        WHERE name LIKE '%' || :search || '%'
-        ORDER BY name ASC, id ASC
-        LIMIT 50
-    """)
-    fun searchRecipes(search: String): Flow<List<RecipeEntity>>
+    @Query("SELECT * FROM recipes WHERE id = :recipeId")
+    suspend fun getRecipeById(recipeId: Long): RecipeEntity?
 
-    @Query("SELECT * FROM recipes LIMIT 20")
-    suspend fun getFirst20Recipes(): List<RecipeEntity>
+    @Query("SELECT * FROM recipes WHERE category = :category")
+    suspend fun getRecipesByCategory(category: String): List<RecipeEntity>
 
-    @Query("SELECT * FROM recipes WHERE id = :id LIMIT 1")
-    suspend fun getRecipeById(id: Long): RecipeEntity?
+    @Query("SELECT * FROM recipes WHERE name LIKE :searchQuery")
+    suspend fun searchRecipes(searchQuery: String): List<RecipeEntity>
 
-    @Query("""
-        SELECT * FROM recipes
-        WHERE category = :category
-        ORDER BY name ASC, id ASC
-        LIMIT :limit OFFSET :offset
-    """)
-    suspend fun getRecipesByCategory(
-        category: String,
-        limit: Int = 30,
-        offset: Int = 0
-    ): List<RecipeEntity>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(recipes: List<RecipeEntity>)
 
-    @Query("""
-        SELECT DISTINCT category FROM recipes
-        WHERE category IS NOT NULL
-        ORDER BY category ASC
-    """)
-    fun getCategories(): Flow<List<String>>
+    @Update
+    suspend fun update(recipe: RecipeEntity)
 
-    @Query("SELECT COUNT(*) FROM recipes")
-    suspend fun getRecipeCount(): Int
+    @Query("DELETE FROM recipes")
+    suspend fun deleteAll()
 }

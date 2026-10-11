@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = "left"
+                            startDestination = "main"
                         ) {
                             composable("left") { GeladeiraScreen() }
                             composable("main") { MainScreen() }
@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BottomNavigation(navController: NavHostController) {
-    var currentRoute by remember { mutableStateOf("left") }
+    var currentRoute by remember { mutableStateOf("main") }
 
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,

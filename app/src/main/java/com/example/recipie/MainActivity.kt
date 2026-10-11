@@ -32,6 +32,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.recipie.ui.theme.ReciPieTheme
+import com.example.recipie.GeladeiraScreen
+import com.example.recipie.FogaoScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,9 +61,9 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             startDestination = "left"
                         ) {
-                            composable("left") { LeftScreen() }
+                            composable("left") { GeladeiraScreen() }
                             composable("main") { MainScreen() }
-                            composable("right") { RightScreen() }
+                            composable("right") { FogaoScreen() }
                         }
                     }
                 }
@@ -157,30 +159,6 @@ fun BottomNavigation(navController: NavHostController) {
 }
 
 @Composable
-fun LeftScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Geladeira?",
-            fontSize = 24.sp,
-            color = Color.White,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        Text(
-            text = "Aqui fica a geladeira sepa",
-            fontSize = 16.sp,
-            color = Color.LightGray,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
-    }
-}
-
-@Composable
 fun MainScreen() {
     Column(
         modifier = Modifier
@@ -204,35 +182,11 @@ fun MainScreen() {
     }
 }
 
-@Composable
-fun RightScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Fogão?",
-            fontSize = 24.sp,
-            color = Color.White,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        Text(
-            text = "Aqui vai ficar o fogao e as receitas sepa",
-            fontSize = 16.sp,
-            color = Color.LightGray,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
-fun LeftScreenPreview() {
+fun GeladeiraScreenPreview() {
     ReciPieTheme {
-        LeftScreen()
+        GeladeiraScreen()
     }
 }
 
@@ -246,8 +200,8 @@ fun MainScreenPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun RightScreenPreview() {
+fun FogaoScreenPreview() {
     ReciPieTheme {
-        RightScreen()
+        FogaoScreen()
     }
 }

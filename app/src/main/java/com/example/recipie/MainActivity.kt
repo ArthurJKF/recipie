@@ -242,7 +242,7 @@ fun MainScreen(
             ) {
                 items(recipes) { recipe ->
                     Text(
-                        text = recipe.toString(),
+                        text = recipe.name.toString(),
                         color = Color.White,
                         modifier = Modifier
                             .fillMaxWidth()

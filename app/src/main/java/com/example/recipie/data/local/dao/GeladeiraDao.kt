@@ -30,19 +30,15 @@ interface GeladeiraDao {
     """)
     fun getAllItems(): Flow<List<GeladeiraItemInfo>>
 
-    // Find one fridge item
     @Query("SELECT * FROM geladeira WHERE id = :id LIMIT 1")
     suspend fun getItemById(id: Long): GeladeiraEntity?
 
-    // Add a food to the fridge
     @Insert
     suspend fun insertItem(item: GeladeiraEntity): Long
 
-    // Update its quantity or expiration date
     @Update
     suspend fun updateItem(item: GeladeiraEntity)
 
-    // Remove a food from the fridge
     @Delete
     suspend fun deleteItem(item: GeladeiraEntity)
 }

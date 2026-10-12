@@ -49,8 +49,9 @@ class RecipieRepository(
     suspend fun getAllIngredientes(): List<IngredienteEntity> =
         ingredienteDao.getAllIngredientes()
 
-    suspend fun getIngredienteById(ingredientId: Long): IngredienteEntity? =
-        ingredienteDao.getIngredienteById(ingredientId)
+    suspend fun getIngredienteById(id: Long): IngredienteEntity? {
+        return ingredienteDao.getIngredienteById(id)
+    }
 
     suspend fun searchIngredientes(searchQuery: String): List<IngredienteEntity> =
         if (searchQuery.isNotEmpty()) {

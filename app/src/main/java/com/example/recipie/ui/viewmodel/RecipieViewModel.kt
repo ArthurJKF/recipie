@@ -57,4 +57,21 @@ class RecipieViewModel(application: Application) : AndroidViewModel(application)
             }
         }
     }
+
+    // Função que busca ingredientes por nome e atualiza a lista
+    fun searchIngredientes(query: String) {
+        viewModelScope.launch {
+            try {
+                val results = repository.searchIngredientes(query)
+                if (results.isNotEmpty()) {
+                    val ingredientNames = results.map { it.ingredient_name }.filterNotNull().joinToString(", ")
+                    _nomeIngrediente.value = "Resultados: $ingredientNames"
+                } else {
+                    _nomeIngrediente.value = "Nenhum ingrediente encontrado para '$query'"
+                }
+            } catch (e: Exception) {
+                _nomeIngrediente.value = "Erro na busca: ${e.message}"
+            }
+        }
+    }
 }

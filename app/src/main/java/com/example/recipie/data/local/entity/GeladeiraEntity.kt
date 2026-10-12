@@ -10,8 +10,8 @@ import androidx.room.PrimaryKey
     tableName = "geladeira",
     foreignKeys = [
         ForeignKey(
-            entity = IngredientesEntity::class,
-            parentColumns = ["codigo"],
+            entity = IngredienteEntity::class,
+            parentColumns = ["ingredient_id"],
             childColumns = ["food_code"],
             onDelete = ForeignKey.RESTRICT
         )

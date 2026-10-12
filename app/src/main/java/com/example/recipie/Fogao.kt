@@ -1,38 +1,37 @@
 package com.example.recipie
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.recipie.ui.viewmodel.RecipieViewModel
 
 @Composable
-fun FogaoScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+fun FogaoScreen(viewModel: RecipieViewModel = viewModel()) {
+
+    // Observa a string com o nome do ingrediente
+    val nomeDoIngrediente by viewModel.nomeIngrediente.observeAsState(initial = "Carregando...")
+
+    // Assim que a tela abrir, manda buscar o ingrediente de ID 1 (pode mudar o número)
+    LaunchedEffect(Unit) {
+        viewModel.testarBancoDeDados()
+    }
+
+    // Mostra o resultado no centro da tela
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Fogão?",
-            fontSize = 24.sp,
-            color = Color.White,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        Text(
-            text = "Aqui vai ficar o fogao e as receitas sepa",
-            fontSize = 16.sp,
-            color = Color.LightGray,
-            textAlign = TextAlign.Center
+            text = nomeDoIngrediente,
+            fontSize = 24.sp
         )
     }
 }

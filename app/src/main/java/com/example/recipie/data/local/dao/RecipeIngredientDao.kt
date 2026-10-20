@@ -1,38 +1,25 @@
 package com.example.recipie.data.local.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.example.recipie.data.local.entity.RecipeIngredientEntity
+import com.example.recipie.data.model.DetailIngredient
 
 @Dao
 interface RecipeIngredientDao {
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertAll(ingredients: List<RecipeIngredientEntity>)
 
-    @Query("SELECT * FROM recipe_ingredients")
-    suspend fun getAllRecipeIngredients(): List<RecipeIngredientEntity>
+    @Query("SELECT COUNT(*) FROM recipe_ingredients WHERE ingredient_id = :id")
+    suspend fun usageCount(id: Long): Int
 
-    @Query("SELECT * FROM recipe_ingredients WHERE recipe_id = :recipeId")
-    suspend fun getIngredientsByRecipeId(recipeId: Long): List<RecipeIngredientEntity>
+    @Query("DELETE FROM recipe_ingredients WHERE recipe_id = :id")
+    suspend fun deleteByRecipeId(id: Long)
 
-    @Query("SELECT * FROM recipe_ingredients WHERE ingredient_id = :ingredientId")
-    suspend fun getRecipesByIngredientId(ingredientId: Long): List<RecipeIngredientEntity>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(recipeIngredients: List<RecipeIngredientEntity>)
-
-    @Transaction
-    suspend fun insertWithRecipeAndIngrediente(recipeId: Long, ingredienteId: Long, quantity: String?, unit: String?, preparationNote: String?) {
-        insertAll(listOf(RecipeIngredientEntity(recipeId, ingredienteId, quantity, unit, preparationNote)))
-    }
-
-    @Query("DELETE FROM recipe_ingredients WHERE recipe_id = :recipeId")
-    suspend fun deleteByRecipeId(recipeId: Long)
-
-    @Query("DELETE FROM recipe_ingredients WHERE ingredient_id = :ingredientId")
-    suspend fun deleteByIngredientId(ingredientId: Long)
-
-    @Query("DELETE FROM recipe_ingredients")
-    suspend fun deleteAll()
+    @Query("""SELECT ri.ingredient_id AS id, COALESCE(i.ingredient_name, 'Ingrediente') AS name,
+        ri.quantity, ri.unit, ri.preparation_note AS note,
+        EXISTS(SELECT 1 FROM geladeira g WHERE g.food_code = ri.ingredient_id
+            AND g.quantity_g > 0 AND (g.expiration_date IS NULL OR g.expiration_date >= :today)) AS available
+        FROM recipe_ingredients ri LEFT JOIN ingredientes i ON i.ingredient_id = ri.ingredient_id
+        WHERE ri.recipe_id = :id AND i.is_visible = 1 ORDER BY i.ingredient_name""")
+    suspend fun details(id: Long, today: String): List<DetailIngredient>
 }

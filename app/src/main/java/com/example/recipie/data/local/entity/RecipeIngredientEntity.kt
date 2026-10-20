@@ -1,13 +1,14 @@
 package com.example.recipie.data.local.entity
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
-@Entity(tableName = "recipe_ingredients", primaryKeys = ["recipe_id", "ingredient_id"])
+// Uma receita pode usar o mesmo ingrediente em etapas diferentes.
+@Entity(tableName = "recipe_ingredients", indices = [Index("recipe_id"), Index("ingredient_id")])
 data class RecipeIngredientEntity(
     val recipe_id: Long,
     val ingredient_id: Long,
     val quantity: String?,
     val unit: String?,
-    val preparation_note: String?
+    val preparation_note: String?,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0
 )

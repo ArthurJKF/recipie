@@ -1,5 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.ReciPie" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Recipie.Base" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">#EDEDED</item>
+        <item name="android:navigationBarColor">#404040</item>
+        <item name="android:colorAccent">#404040</item>
+    </style>
+    <style name="Theme.Recipie" parent="Theme.Recipie.Base" />
 </resources>
